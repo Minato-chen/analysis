@@ -4,7 +4,7 @@ import pandas as pd
 df = pd.read_csv('./csv/exp_data.csv')
 
 # 定义需要分组的列
-group_columns = ['size', 'R_fore', 'G_fore', 'B_fore', 'R_back', 'G_back', 'B_back']
+group_columns = ['size', 'R_test', 'G_test', 'B_test', 'R_inducer', 'G_inducer', 'B_inducer']
 
 # 定义需要取平均值的列
 mean_columns = ['R_label', 'G_label', 'B_label', 'L_label', 'a_label', 'b_label']

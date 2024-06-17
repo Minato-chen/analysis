@@ -22,12 +22,12 @@ def convert_to_int(value):
 # 遍历分组数据并处理对应的图片
 for _, row in df_grouped.iterrows():
     size = row['size']  # 保留size为浮点数
-    R_fore = convert_to_int(row['R_fore'])
-    G_fore = convert_to_int(row['G_fore'])
-    B_fore = convert_to_int(row['B_fore'])
-    R_back = convert_to_int(row['R_back'])
-    G_back = convert_to_int(row['G_back'])
-    B_back = convert_to_int(row['B_back'])
+    R_fore = convert_to_int(row['R_test'])
+    G_fore = convert_to_int(row['G_test'])
+    B_fore = convert_to_int(row['B_test'])
+    R_back = convert_to_int(row['R_inducer'])
+    G_back = convert_to_int(row['G_inducer'])
+    B_back = convert_to_int(row['B_inducer'])
     R_label = convert_to_int(row['R_label'])
     G_label = convert_to_int(row['G_label'])
     B_label = convert_to_int(row['B_label'])
