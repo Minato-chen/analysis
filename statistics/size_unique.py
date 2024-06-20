@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 from skimage.color import deltaE_cie76
 
 # 从CSV文件中读取数据
-df = pd.read_csv('updated_averaged_data_0.csv')
+df = pd.read_csv('../updated_averaged_data_012.csv')
 
 # 提取数据
 test_color = np.array([80, -90, 90])
 inducer_colors = df[['L_inducer', 'a_inducer', 'b_inducer']].values
-labeled_colors = df[['L_label', 'a_label', 'b_label']].values
+labeled_colors = df[['L_label_mean', 'a_label_mean', 'b_label_mean']].values
 bar_colors = df[['R_inducer', 'G_inducer', 'B_inducer']].values / 255  # 归一化到0-1之间
 hue_inducer = df['hue_inducer'].values
 test_rgb = np.array([0, 235, 0])/255
@@ -38,10 +38,10 @@ for size in unique_sizes:
 
     # 绘制label颜色，并用对应bar_color的箭头指向label颜色
     for i in range(len(df[mask])):
-        plt.scatter(df['a_label'][mask].values[i], df['b_label'][mask].values[i], c='black', marker='x')
+        plt.scatter(df['a_label_mean'][mask].values[i], df['b_label_mean'][mask].values[i], c='black', marker='x')
         plt.arrow(test_color[1], test_color[2],
-                  df['a_label'][mask].values[i] - test_color[1],
-                  df['b_label'][mask].values[i] - test_color[2],
+                  df['a_label_mean'][mask].values[i] - test_color[1],
+                  df['b_label_mean'][mask].values[i] - test_color[2],
                   color=bar_colors[mask][i], head_width=1, head_length=2, length_includes_head=True)
 
     # 绘制test_color

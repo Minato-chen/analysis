@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 from skimage.color import deltaE_cie76
 
 # 从CSV文件中读取数据
-df = pd.read_csv('updated_averaged_data_0.csv')
+df = pd.read_csv('../updated_averaged_data_012.csv')
 
 # 提取数据
 test_color = np.array([80, -90, 90])
 inducer_colors = df[['L_inducer', 'a_inducer', 'b_inducer']].values
-labeled_colors = df[['L_label', 'a_label', 'b_label']].values
+labeled_colors = df[['L_label_mean', 'a_label_mean', 'b_label_mean']].values
 bar_colors = df[['R_inducer', 'G_inducer', 'B_inducer']].values / 255  # 归一化到0-1之间
 hue_inducer = df['hue_inducer'].values
 test_rgb = np.array([0, 235, 0])/255
@@ -31,7 +31,7 @@ for inducer in unique_inducers:
     plt.figure(figsize=(10, 5))
 
     # 绘制label颜色
-    plt.scatter(df['a_label'][mask], df['b_label'][mask], c='black', marker='x', label='Labeled Colors')
+    plt.scatter(df['a_label_mean'][mask], df['b_label_mean'][mask], c='black', marker='x', label='Labeled Colors')
 
     # 绘制inducer颜色和test_color
     plt.scatter(inducer[1], inducer[2], c=bar_colors_masked, label='Inducer Color')
@@ -41,7 +41,7 @@ for inducer in unique_inducers:
 
     # 标注size
     for i, size in enumerate(df['size'][mask]):
-        plt.text(df['a_label'][mask].values[i], df['b_label'][mask].values[i], f'{int(size)}mm', fontsize=8, ha='right')
+        plt.text(df['a_label_mean'][mask].values[i], df['b_label_mean'][mask].values[i], f'{int(size)}mm', fontsize=8, ha='right')
     plt.xlabel("a")
     plt.ylabel("b")
     inducer_int = tuple(int(x) for x in inducer)

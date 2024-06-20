@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 
 # 读取合并后的CSV文件
-df_grouped = pd.read_csv('updated_averaged_data_0.csv')
+df_grouped = pd.read_csv('updated_averaged_data_2.csv')
 
 # 创建输出文件夹
 output_folder = 'image_output'

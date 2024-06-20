@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # 读取CSV文件
-df = pd.read_csv('./csv/exp_data.csv')
+df = pd.read_csv('./csv/exp_data_2_nakanishi.csv')
 
 # 定义需要分组的列
 group_columns = ['size', 'R_test', 'G_test', 'B_test', 'R_inducer', 'G_inducer', 'B_inducer']
@@ -39,7 +39,7 @@ grouped[lab_columns_mean] = grouped[lab_columns_mean].round(2)
 grouped[lab_columns_sem] = grouped[lab_columns_sem].round(2)
 
 # 保存结果到新的CSV文件
-grouped.to_csv('averaged_data_with_error_bars.csv', index=False)
+grouped.to_csv('averaged_data_with_error_bars_2.csv', index=False)
 
-print("数据处理完成，结果已保存到averaged_data_with_error_bars.csv")
+print("数据处理完成，结果已保存")
 

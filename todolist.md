@@ -13,8 +13,8 @@
 
 
 本代码使用方法
-1. mean.py（输入：实验结果csv，输出：平均值csv）
-2. pic_merge.py（输入：平均值csv，输出：合并图片,重命名）
-3. add_lab.py（输入：诱导色的原Lab+平均值csv，输出：加入诱导色的原Lab的数据）
-（至此数据处理完成，还要加个测试色的lab，这个简单）
-4. sta.py（输入：处理完的数据，输出：分析结果）
+1. mean.py（输入：实验结果csv，输出：平均值csv） 
+2. add_lab.py（输入：诱导色的原Lab+平均值csv，输出：加入诱导色的原Lab的数据）
+（至此数据处理完成，还要加个测试色的lab，这个简单） 
+3. pic_merge.py（输入：平均值csv，输出：合并图片,重命名）
+4. size_unique,inducer_unique,lab_graph_size,lab_graph_inducer（输入：处理完的数据，输出：分析结果）
