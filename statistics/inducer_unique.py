@@ -32,14 +32,14 @@ for inducer in unique_inducers:
     plt.figure(figsize=(10, 5))
 
     # 绘制label颜色
-    plt.scatter(df['a_label_mean'][mask], df['b_label_mean'][mask], c='black', marker='x', label='Labeled Colors',
+    plt.scatter(df['a_label_mean'][mask], df['b_label_mean'][mask], c='black', marker='o', label='Labeled Colors',
                 linewidth=0.5)
 
     # 绘制inducer颜色和test_color
-    plt.scatter(inducer[1], inducer[2], c=bar_colors_masked, s=100, edgecolors='red', label='Inducer Color')
+    plt.scatter(inducer[1], inducer[2], c=bar_colors_masked, s=70, label='Inducer Color')
 
     # 绘制test_color,参数单个颜色用color，多个颜色用c
-    plt.scatter(test_color[1], test_color[2], color=test_rgb, marker='o', s=100, edgecolors='blue', label='Test Color')
+    plt.scatter(test_color[1], test_color[2], color=test_rgb, marker='o', s=70, label='Test Color')
 
     # 添加虚线（直线）将test color和inducer color连起来
     plt.plot([inducer[1], test_color[1]], [inducer[2], test_color[2]], linestyle='--', color='gray')

@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from skimage.color import deltaE_cie76
-from matplotlib.colors import hsv_to_rgb
 from matplotlib.lines import Line2D
 
 # 从CSV文件中读取数据
@@ -29,10 +28,10 @@ os.makedirs('size_unique_plots', exist_ok=True)
 
 for size in unique_sizes:
     mask = (df['size'] == size)
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(7, 7), dpi=600)  # 设置图形为正方形，并提高解析度
 
-    # 绘制inducer颜色，用bar_color标记
-    plt.scatter(df['a_inducer'][mask], df['b_inducer'][mask], c=bar_colors[mask], label='Inducer Colors')
+    # 绘制inducer颜色，用bar_color标记，缩小点的大小
+    plt.scatter(df['a_inducer'][mask], df['b_inducer'][mask], c=bar_colors[mask], label='Inducer Colors', s=15)
 
     # 在inducer颜色旁边标记hue_inducer值
     for i, hue in enumerate(hue_inducer[mask]):
@@ -42,27 +41,49 @@ for size in unique_sizes:
     for i in range(len(df[mask])):
         offset = i * 0.1  # 添加偏移
         plt.scatter(df['a_label_mean'][mask].values[i] + offset, df['b_label_mean'][mask].values[i] + offset,
-                    c=[bar_colors[mask][i]], marker='x')
-        plt.arrow(test_color[1], test_color[2],
-                  df['a_label_mean'][mask].values[i] + offset - test_color[1],
-                  df['b_label_mean'][mask].values[i] + offset - test_color[2],
-                  color=bar_colors[mask][i], linestyle='--', head_width=1, head_length=2, length_includes_head=True)
+                    facecolors='none', edgecolors=[bar_colors[mask][i]], marker='o', s=15, linewidth=0.25)
+        plt.scatter(df['a_label_mean'][mask].values[i] + offset, df['b_label_mean'][mask].values[i] + offset,
+                    c=[bar_colors[mask][i]], marker='o', s=3)
 
-    # 绘制test_color
-    plt.scatter(test_color[1], test_color[2], color=test_rgb, marker='o', label='Test Color')
+        # 连接test_color和label color，改为虚线，调大间隔
+        plt.plot([test_color[1], df['a_label_mean'][mask].values[i] + offset],
+                 [test_color[2], df['b_label_mean'][mask].values[i] + offset],
+                 color=bar_colors[mask][i], linestyle=(0, (5, 5)), linewidth=0.5)
 
-    # 优化图例
+        # 将label color与对应的inducer color连接起来，改为虚线，调大间隔
+        plt.plot([df['a_inducer'][mask].values[i], df['a_label_mean'][mask].values[i] + offset],
+                 [df['b_inducer'][mask].values[i], df['b_label_mean'][mask].values[i] + offset],
+                 color=bar_colors[mask][i], linestyle=(0, (5, 5)), linewidth=0.5)
+
+    # 绘制test_color，并缩小点的大小
+    plt.scatter(test_color[1], test_color[2], color=test_rgb, marker='o', label='Test Color 135°', s=15)
+
+    # 设置横纵坐标比例相同
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    # 创建图例元素
     legend_elements = [
-        Line2D([0], [0], marker='o', color='w', label='Test Color', markerfacecolor=test_rgb, markersize=10),
-        Line2D([0], [0], marker='x', color='w', label='Label Colors', markerfacecolor='k', markersize=10),
-        Line2D([0], [0], linestyle='--', color='k', label='Connection Lines')
+        Line2D([0], [0], marker='o', color='w', label='Test Color', markerfacecolor=test_rgb, markersize=5),
     ]
-    plt.legend(handles=legend_elements, loc='upper right')
+
+    # 根据hue_inducer添加Inducer Colors和Label Colors的图例
+    unique_hues = np.unique(hue_inducer[mask])
+    for hue in unique_hues:
+        hue_mask = (hue_inducer == hue)
+        legend_elements.append(Line2D([0], [0], marker='o', color='w', label=f'Inducer Color {int(hue)}°', markerfacecolor=bar_colors[hue_mask][0], markersize=5))
+        legend_elements.append(Line2D([0], [0], marker='o', color='w', label=f'Label Color {int(hue)}°', markerfacecolor='none', markeredgecolor=bar_colors[hue_mask][0], markersize=5))
+
+    # 添加连接线的图例
+    legend_elements.append(Line2D([0], [0], linestyle=(0, (5, 5)), color='k', label='Test to Label Color', linewidth=0.5))
+    legend_elements.append(Line2D([0], [0], linestyle=(0, (5, 5)), color='k', label='Label to Inducer Color', linewidth=0.5))
+
+    # 显示图例，并放置在图外
+    plt.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1, 0.5))
 
     plt.xlabel("a")
     plt.ylabel("b")
     plt.title(f"For size {size} with different inducers")
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(f'size_unique_plots/size_{size}.png')
+    plt.savefig(f'size_unique_plots/size_{size}.png', bbox_inches='tight')
     plt.close()
