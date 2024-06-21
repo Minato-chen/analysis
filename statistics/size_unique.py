@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from skimage.color import deltaE_cie76
+from matplotlib.colors import hsv_to_rgb
+from matplotlib.lines import Line2D
 
 # 从CSV文件中读取数据
 df = pd.read_csv('../updated_averaged_data_012.csv')
@@ -36,22 +38,30 @@ for size in unique_sizes:
     for i, hue in enumerate(hue_inducer[mask]):
         plt.annotate(f'{int(hue)}°', (df['a_inducer'][mask].values[i], df['b_inducer'][mask].values[i]), textcoords="offset points", xytext=(0,10), ha='center', fontsize=8, color='black')
 
-    # 绘制label颜色，并用对应bar_color的箭头指向label颜色
+    # 绘制label颜色，并用bar_color标记，使用偏移区分重合点
     for i in range(len(df[mask])):
-        plt.scatter(df['a_label_mean'][mask].values[i], df['b_label_mean'][mask].values[i], c='black', marker='x')
+        offset = i * 0.1  # 添加偏移
+        plt.scatter(df['a_label_mean'][mask].values[i] + offset, df['b_label_mean'][mask].values[i] + offset,
+                    c=[bar_colors[mask][i]], marker='x')
         plt.arrow(test_color[1], test_color[2],
-                  df['a_label_mean'][mask].values[i] - test_color[1],
-                  df['b_label_mean'][mask].values[i] - test_color[2],
-                  color=bar_colors[mask][i], head_width=1, head_length=2, length_includes_head=True)
+                  df['a_label_mean'][mask].values[i] + offset - test_color[1],
+                  df['b_label_mean'][mask].values[i] + offset - test_color[2],
+                  color=bar_colors[mask][i], linestyle='--', head_width=1, head_length=2, length_includes_head=True)
 
     # 绘制test_color
-    plt.scatter(test_color[1], test_color[2], color=test_rgb, marker='o'
-                                                                     '', label='Test Color')
+    plt.scatter(test_color[1], test_color[2], color=test_rgb, marker='o', label='Test Color')
+
+    # 优化图例
+    legend_elements = [
+        Line2D([0], [0], marker='o', color='w', label='Test Color', markerfacecolor=test_rgb, markersize=10),
+        Line2D([0], [0], marker='x', color='w', label='Label Colors', markerfacecolor='k', markersize=10),
+        Line2D([0], [0], linestyle='--', color='k', label='Connection Lines')
+    ]
+    plt.legend(handles=legend_elements, loc='upper right')
 
     plt.xlabel("a")
     plt.ylabel("b")
     plt.title(f"For size {size} with different inducers")
-    plt.legend()
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(f'size_unique_plots/size_{size}.png')
