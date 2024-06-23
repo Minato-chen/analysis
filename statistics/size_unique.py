@@ -31,7 +31,8 @@ for size in unique_sizes:
     plt.figure(figsize=(7, 7), dpi=600)  # 设置图形为正方形，并提高解析度
 
     # 绘制inducer颜色，用bar_color标记，缩小点的大小
-    plt.scatter(df['a_inducer'][mask], df['b_inducer'][mask], c=bar_colors[mask], label='Inducer Colors', s=15)
+    plt.scatter(df['a_inducer'][mask], df['b_inducer'][mask], c=bar_colors[mask], marker='x', label='Inducer Colors',
+                s=15)
 
     # 在inducer颜色旁边标记hue_inducer值
     for i, hue in enumerate(hue_inducer[mask]):
@@ -43,12 +44,7 @@ for size in unique_sizes:
         plt.scatter(df['a_label_mean'][mask].values[i] + offset, df['b_label_mean'][mask].values[i] + offset,
                     facecolors='none', edgecolors=[bar_colors[mask][i]], marker='o', s=15, linewidth=0.25)
         plt.scatter(df['a_label_mean'][mask].values[i] + offset, df['b_label_mean'][mask].values[i] + offset,
-                    c=[bar_colors[mask][i]], marker='o', s=3)
-
-        # 连接test_color和label color，改为虚线，调大间隔
-        plt.plot([test_color[1], df['a_label_mean'][mask].values[i] + offset],
-                 [test_color[2], df['b_label_mean'][mask].values[i] + offset],
-                 color=bar_colors[mask][i], linestyle=(0, (5, 5)), linewidth=0.5)
+                    c=[bar_colors[mask][i]], marker='o', s=1)
 
         # 将label color与对应的inducer color连接起来，改为虚线，调大间隔
         plt.plot([df['a_inducer'][mask].values[i], df['a_label_mean'][mask].values[i] + offset],
@@ -70,11 +66,14 @@ for size in unique_sizes:
     unique_hues = np.unique(hue_inducer[mask])
     for hue in unique_hues:
         hue_mask = (hue_inducer == hue)
-        legend_elements.append(Line2D([0], [0], marker='o', color='w', label=f'Inducer Color {int(hue)}°', markerfacecolor=bar_colors[hue_mask][0], markersize=5))
-        legend_elements.append(Line2D([0], [0], marker='o', color='w', label=f'Label Color {int(hue)}°', markerfacecolor='none', markeredgecolor=bar_colors[hue_mask][0], markersize=5))
+        legend_elements.append(Line2D([0], [0], marker='x', color='w', label=f'Inducer Color {int(hue)}°',
+                                      markerfacecolor=bar_colors[hue_mask][0], markeredgecolor=bar_colors[hue_mask][0],
+                                      markersize=5))
+        legend_elements.append(
+            Line2D([0], [0], marker='o', color='w', label=f'Label Color {int(hue)}°', markerfacecolor='none',
+                   markeredgecolor=bar_colors[hue_mask][0], markersize=5))
 
     # 添加连接线的图例
-    legend_elements.append(Line2D([0], [0], linestyle=(0, (5, 5)), color='k', label='Test to Label Color', linewidth=0.5))
     legend_elements.append(Line2D([0], [0], linestyle=(0, (5, 5)), color='k', label='Label to Inducer Color', linewidth=0.5))
 
     # 显示图例，并放置在图外
