@@ -2,10 +2,14 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
+import colorsys
 
 # 从CSV文件中读取数据
-df = pd.read_csv('../updated_averaged_data_012.csv')
+df = pd.read_csv('../../updated_averaged_data_012.csv')
+
+# 确保数据范围正确
+print("Data range check:")
+print(df[['L_inducer', 'a_inducer', 'b_inducer', 'L_label_mean', 'a_label_mean', 'b_label_mean']].describe())
 
 # 提取数据
 test_color = np.array([80, -90, 90])
@@ -20,6 +24,12 @@ print(df.head())
 # 提取独特的sizes和hues
 unique_sizes = np.sort(df['size'].unique())
 unique_hues = np.sort(df['hue_inducer'].unique())
+
+
+# 将hue_inducer转换为RGB颜色
+def hue_to_rgb(hue):
+    return colorsys.hsv_to_rgb(hue / 360.0, 1.0, 1.0)
+
 
 # 计算ΔL, Δa, Δb
 df['ΔL'] = df['L_label_mean'] - test_color[0]
@@ -59,11 +69,10 @@ def plot_labels(label_column, sem_column, y_label, file_name, test_value=None):
         sorted_labels = sorted_df[label_column].values
         sorted_sems = sorted_df[sem_column].values if sem_column in sorted_df.columns else np.zeros_like(sorted_labels)
         sorted_sizes = sorted_df['size'].values
-        sorted_colors = bar_colors[mask]
 
         positions = []
         for i, size in enumerate(sorted_sizes):
-            color = sorted_colors[i]
+            color = hue_to_rgb(hue)
             position = len(x_ticks) + 1
             x_ticks.append(f'{size}')
             x_positions.append(position)
@@ -103,11 +112,10 @@ def plot_labels_by_size(label_column, sem_column, y_label, file_name, test_value
         sorted_labels = sorted_df[label_column].values
         sorted_sems = sorted_df[sem_column].values if sem_column in sorted_df.columns else np.zeros_like(sorted_labels)
         sorted_hues = sorted_df['hue_inducer'].values
-        sorted_colors = sorted_df[['R_inducer', 'G_inducer', 'B_inducer']].values / 255  # 确保颜色排序正确
 
         positions = []
         for i, hue in enumerate(sorted_hues):
-            color = sorted_colors[i]
+            color = hue_to_rgb(hue)
             position = len(x_ticks) + 1
             x_ticks.append(f'{hue}')
             x_positions.append(position)
@@ -153,47 +161,3 @@ plot_labels_by_size('Δb', 'Δb_sem', 'Δb', 'Δb_vs_diff_size.png')
 plot_labels_by_size('ΔE', 'ΔE_sem', 'ΔE', 'ΔE_vs_diff_size.png')
 
 print("Plots generated successfully.")
-
-# # 进行回归分析
-#
-# # 添加常量列用于截距
-# df['intercept'] = 1.0
-#
-# # 定义自变量和因变量
-# independent_vars = ['intercept', 'size', 'L_inducer', 'a_inducer', 'b_inducer']
-# dependent_vars = ['L_label_mean', 'a_label_mean', 'b_label_mean']
-#
-# # 进行回归分析并输出结果
-# for dep_var in dependent_vars:
-#     model = sm.OLS(df[dep_var], df[independent_vars]).fit()
-#     print(f'\n回归分析结果 ({dep_var}):')
-#     print(model.summary())
-#     # 绘制散点图
-#     plt.scatter(df['size'], df[dep_var], label='real')
-#     plt.plot(df['size'], model.predict(), color='red', label='fit')
-#     plt.xlabel('size')
-#     plt.ylabel(dep_var)
-#     plt.title('linear regression')
-#     plt.legend()
-#     plt.show()
-df['intercept'] = 1.0
-# 添加size的平方项
-# df['size_squared'] = df['size'] ** 2
-
-# 定义新的自变量
-# independent_vars_poly = ['intercept', 'size', 'size_squared', 'L_inducer', 'a_inducer', 'b_inducer']
-independent_vars_poly = ['intercept', 'size', 'L_inducer', 'a_inducer', 'b_inducer']
-dependent_vars = ['L_label_mean', 'a_label_mean', 'b_label_mean', 'ΔE']
-# 进行多项式回归
-for dep_var in dependent_vars:
-    model_poly = sm.OLS(df[dep_var], df[independent_vars_poly]).fit()
-    print(f'\n多项式回归结果 ({dep_var}):')
-    print(model_poly.summary())
-    # 绘制散点图和拟合曲线
-    # plt.scatter(df['size'], df[dep_var], label='real')
-    # plt.plot(df['size'], model_poly.predict(), color='red', label='fit (poly)')
-    # plt.xlabel('size')
-    # plt.ylabel(dep_var)
-    # plt.title('polynomial regression')
-    # plt.legend()
-    # plt.show()

@@ -14,7 +14,6 @@ inducer_colors = df[['L_inducer', 'a_inducer', 'b_inducer']].values
 labeled_colors = df[['L_label_mean', 'a_label_mean', 'b_label_mean']].values
 bar_colors = df[['R_inducer', 'G_inducer', 'B_inducer']].values / 255  # 归一化到0-1之间
 
-
 # 提取独特的sizes和hues
 unique_sizes = np.sort(df['size'].unique())
 unique_hues = np.sort(df['hue_inducer'].unique())
@@ -80,6 +79,8 @@ plot_labels('a_label_mean', 'a_label_sem', 'a_label_mean', 'a_label_vs_diff_hue.
 # 绘制 b_label 图表
 plot_labels('b_label_mean', 'b_label_sem', 'b_label_mean', 'b_label_vs_diff_hue.png', test_color[2])
 
+# 进行回归分析
+
 # 添加常量列用于截距
 df['intercept'] = 1.0
 
@@ -92,20 +93,3 @@ for dep_var in dependent_vars:
     model = sm.OLS(df[dep_var], df[independent_vars]).fit()
     print(f'\n回归分析结果 ({dep_var}):')
     print(model.summary())
-
-    # 创建散点图
-    plt.figure(figsize=(8, 6))
-    plt.scatter(df['size'], df[dep_var], color='blue', label='Data')
-
-    # 创建拟合线
-    predicted_values = model.predict(df[independent_vars])
-    plt.plot(df['size'], predicted_values, color='red', label='Fit')
-
-    # 添加图例和标题
-    plt.legend()
-    plt.title(f'Regression Analysis ({dep_var})')
-    plt.xlabel('Size')
-    plt.ylabel(dep_var)
-
-    # 显示图形
-    plt.show()
