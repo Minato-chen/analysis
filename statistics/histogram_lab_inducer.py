@@ -57,10 +57,10 @@ def plot_labels(label_column, sem_column, y_label, file_name, test_value):
     # 绘制test_color对应的虚线
     plt.axhline(y=test_value, color='grey', linestyle='--', linewidth=2)
 
-    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90)
-    plt.xlabel("Size (and Hue in brackets)")
-    plt.ylabel(y_label)
-    plt.title(f"{y_label} for different Hues and Sizes")
+    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90, fontsize=25)
+    plt.xlabel("Size (and Hue in brackets)", fontsize=25)
+    plt.ylabel(y_label, fontsize=25)
+    plt.title(f"{y_label} for different Hues and Sizes", fontsize=35)
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(f'inducer_unique_plots/{file_name}')
@@ -83,29 +83,29 @@ plot_labels('b_label_mean', 'b_label_sem', 'b_label_mean', 'b_label_vs_diff_hue.
 # 添加常量列用于截距
 df['intercept'] = 1.0
 
-# 定义自变量和因变量
-independent_vars = ['intercept', 'size', 'L_inducer', 'a_inducer', 'b_inducer']
-dependent_vars = ['L_label_mean', 'a_label_mean', 'b_label_mean']
-
-# 进行回归分析并输出结果
-for dep_var in dependent_vars:
-    model = sm.OLS(df[dep_var], df[independent_vars]).fit()
-    print(f'\n回归分析结果 ({dep_var}):')
-    print(model.summary())
-
-    # 创建散点图
-    plt.figure(figsize=(8, 6))
-    plt.scatter(df['size'], df[dep_var], color='blue', label='Data')
-
-    # 创建拟合线
-    predicted_values = model.predict(df[independent_vars])
-    plt.plot(df['size'], predicted_values, color='red', label='Fit')
-
-    # 添加图例和标题
-    plt.legend()
-    plt.title(f'Regression Analysis ({dep_var})')
-    plt.xlabel('Size')
-    plt.ylabel(dep_var)
-
-    # 显示图形
-    plt.show()
+# # 定义自变量和因变量
+# independent_vars = ['intercept', 'size', 'L_inducer', 'a_inducer', 'b_inducer']
+# dependent_vars = ['L_label_mean', 'a_label_mean', 'b_label_mean']
+#
+# # 进行回归分析并输出结果
+# for dep_var in dependent_vars:
+#     model = sm.OLS(df[dep_var], df[independent_vars]).fit()
+#     print(f'\n回归分析结果 ({dep_var}):')
+#     print(model.summary())
+#
+#     # 创建散点图
+#     plt.figure(figsize=(8, 6))
+#     plt.scatter(df['size'], df[dep_var], color='blue', label='Data')
+#
+#     # 创建拟合线
+#     predicted_values = model.predict(df[independent_vars])
+#     plt.plot(df['size'], predicted_values, color='red', label='Fit')
+#
+#     # 添加图例和标题
+#     plt.legend()
+#     plt.title(f'Regression Analysis ({dep_var})')
+#     plt.xlabel('Size')
+#     plt.ylabel(dep_var)
+#
+#     # 显示图形
+#     plt.show()

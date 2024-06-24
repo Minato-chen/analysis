@@ -36,20 +36,21 @@ for size in unique_sizes:
 
     # 在inducer颜色旁边标记hue_inducer值
     for i, hue in enumerate(hue_inducer[mask]):
-        plt.annotate(f'{int(hue)}°', (df['a_inducer'][mask].values[i], df['b_inducer'][mask].values[i]), textcoords="offset points", xytext=(0,10), ha='center', fontsize=8, color='black')
+        plt.annotate(f'{int(hue)}°', (df['a_inducer'][mask].values[i], df['b_inducer'][mask].values[i]),
+                     textcoords="offset points", xytext=(0, 10), ha='center', fontsize=10, color='black')
 
     # 绘制label颜色，并用bar_color标记，使用偏移区分重合点
     for i in range(len(df[mask])):
         offset = i * 0.1  # 添加偏移
         plt.scatter(df['a_label_mean'][mask].values[i] + offset, df['b_label_mean'][mask].values[i] + offset,
-                    facecolors='none', edgecolors=[bar_colors[mask][i]], marker='o', s=15, linewidth=0.25)
+                    facecolors='none', edgecolors=[bar_colors[mask][i]], marker='o', s=15, linewidth=0.5)
         plt.scatter(df['a_label_mean'][mask].values[i] + offset, df['b_label_mean'][mask].values[i] + offset,
-                    c=[bar_colors[mask][i]], marker='o', s=1)
+                    c=[bar_colors[mask][i]], marker='o', s=2)
 
         # 将label color与对应的inducer color连接起来，改为虚线，调大间隔
         plt.plot([df['a_inducer'][mask].values[i], df['a_label_mean'][mask].values[i] + offset],
                  [df['b_inducer'][mask].values[i], df['b_label_mean'][mask].values[i] + offset],
-                 color=bar_colors[mask][i], linestyle=(0, (5, 5)), linewidth=0.5)
+                 color=bar_colors[mask][i], linestyle=(0, (5, 5)), linewidth=1.0)
 
     # 绘制test_color，并缩小点的大小
     plt.scatter(test_color[1], test_color[2], color=test_rgb, marker='o', label='Test Color 135°', s=15)
@@ -59,7 +60,7 @@ for size in unique_sizes:
 
     # 创建图例元素
     legend_elements = [
-        Line2D([0], [0], marker='o', color='w', label='Test Color', markerfacecolor=test_rgb, markersize=5),
+        Line2D([0], [0], marker='o', color='w', label='Test Color', markerfacecolor=test_rgb, markersize=7),
     ]
 
     # 根据hue_inducer添加Inducer Colors和Label Colors的图例
@@ -68,20 +69,21 @@ for size in unique_sizes:
         hue_mask = (hue_inducer == hue)
         legend_elements.append(Line2D([0], [0], marker='x', color='w', label=f'Inducer Color {int(hue)}°',
                                       markerfacecolor=bar_colors[hue_mask][0], markeredgecolor=bar_colors[hue_mask][0],
-                                      markersize=5))
+                                      markersize=7))
         legend_elements.append(
             Line2D([0], [0], marker='o', color='w', label=f'Label Color {int(hue)}°', markerfacecolor='none',
-                   markeredgecolor=bar_colors[hue_mask][0], markersize=5))
+                   markeredgecolor=bar_colors[hue_mask][0], markersize=7))
 
     # 添加连接线的图例
-    legend_elements.append(Line2D([0], [0], linestyle=(0, (5, 5)), color='k', label='Label to Inducer Color', linewidth=0.5))
+    legend_elements.append(
+        Line2D([0], [0], linestyle=(0, (5, 5)), color='k', label='Label to Inducer Color', linewidth=1.0))
 
     # 显示图例，并放置在图外
-    plt.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12)
 
-    plt.xlabel("a")
-    plt.ylabel("b")
-    plt.title(f"For size {size} with different inducers")
+    plt.xlabel("a", fontsize=14)
+    plt.ylabel("b", fontsize=14)
+    plt.title(f"For size {size} with different inducers", fontsize=14)
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(f'size_unique_plots/size_{size}.png', bbox_inches='tight')

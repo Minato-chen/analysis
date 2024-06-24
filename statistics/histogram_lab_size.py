@@ -17,11 +17,9 @@ bar_colors = df[['R_inducer', 'G_inducer', 'B_inducer']].values / 255  # 归一�
 unique_sizes = np.sort(df['size'].unique())
 unique_hues = np.sort(df['hue_inducer'].unique())
 
-
 # 将hue_inducer转换为RGB颜色
 def hue_to_rgb(hue):
     return colorsys.hsv_to_rgb(hue / 360.0, 1.0, 1.0)
-
 
 # 创建绘图函数
 def plot_labels(label_column, sem_column, y_label, file_name, test_value):
@@ -64,15 +62,15 @@ def plot_labels(label_column, sem_column, y_label, file_name, test_value):
     # 绘制test_color对应的虚线
     plt.axhline(y=test_value, color='grey', linestyle='--', linewidth=2)
 
-    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90)
-    plt.xlabel("Hue (and Size in brackets)")
-    plt.ylabel(y_label)
-    plt.title(f"{y_label} for different Sizes and Hues")
+    # 增大字体
+    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90, fontsize=25)
+    plt.xlabel("different Hue (same Size)", fontsize=25)
+    plt.ylabel(y_label, fontsize=25)
+    plt.title(f"{y_label} for different Sizes and Hues", fontsize=35)
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(f'size_unique_plots/{file_name}')
     plt.close()
-
 
 # 创建保存目录
 if not os.path.exists('size_unique_plots'):

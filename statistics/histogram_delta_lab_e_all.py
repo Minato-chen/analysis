@@ -80,10 +80,10 @@ def plot_labels(label_column, sem_column, y_label, file_name, test_value=None):
     if test_value is not None:
         plt.axhline(y=test_value, color='grey', linestyle='--', linewidth=2)
 
-    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90)
-    plt.xlabel("Size (and Hue in brackets)")
-    plt.ylabel(y_label)
-    plt.title(f"{y_label} for different Hues and Sizes")
+    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90, fontsize=25)
+    plt.xlabel("different Size (same Hue)", fontsize=25)
+    plt.ylabel(y_label, fontsize=25)
+    plt.title(f"{y_label} for different Hues and Sizes", fontsize=35)
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(f'delta_inducer/{file_name}')
@@ -124,10 +124,10 @@ def plot_labels_by_size(label_column, sem_column, y_label, file_name, test_value
     if test_value is not None:
         plt.axhline(y=test_value, color='grey', linestyle='--', linewidth=2)
 
-    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90)
-    plt.xlabel("Hue (and Size in brackets)")
-    plt.ylabel(y_label)
-    plt.title(f"{y_label} for different Sizes and Hues")
+    plt.xticks(ticks=np.arange(1, len(x_ticks) + 1), labels=x_ticks, rotation=90, fontsize=25)
+    plt.xlabel("different Hue (same Size)", fontsize=25)
+    plt.ylabel(y_label, fontsize=25)
+    plt.title(f"{y_label} for different Sizes and Hues", fontsize=35)
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(f'delta_size/{file_name}')
@@ -154,6 +154,7 @@ plot_labels_by_size('ΔE', 'ΔE_sem', 'ΔE', 'ΔE_vs_diff_size.png')
 
 print("Plots generated successfully.")
 
+
 # # 进行回归分析
 #
 # # 添加常量列用于截距
@@ -176,24 +177,24 @@ print("Plots generated successfully.")
 #     plt.title('linear regression')
 #     plt.legend()
 #     plt.show()
-df['intercept'] = 1.0
+# df['intercept'] = 1.0
 # 添加size的平方项
 # df['size_squared'] = df['size'] ** 2
 
 # 定义新的自变量
 # independent_vars_poly = ['intercept', 'size', 'size_squared', 'L_inducer', 'a_inducer', 'b_inducer']
-independent_vars_poly = ['intercept', 'size', 'L_inducer', 'a_inducer', 'b_inducer']
-dependent_vars = ['L_label_mean', 'a_label_mean', 'b_label_mean', 'ΔE']
-# 进行多项式回归
-for dep_var in dependent_vars:
-    model_poly = sm.OLS(df[dep_var], df[independent_vars_poly]).fit()
-    print(f'\n多项式回归结果 ({dep_var}):')
-    print(model_poly.summary())
-    # 绘制散点图和拟合曲线
-    # plt.scatter(df['size'], df[dep_var], label='real')
-    # plt.plot(df['size'], model_poly.predict(), color='red', label='fit (poly)')
-    # plt.xlabel('size')
-    # plt.ylabel(dep_var)
-    # plt.title('polynomial regression')
-    # plt.legend()
-    # plt.show()
+# independent_vars_poly = ['intercept', 'size', 'L_inducer', 'a_inducer', 'b_inducer']
+# dependent_vars = ['L_label_mean', 'a_label_mean', 'b_label_mean', 'ΔE']
+# # 进行多项式回归
+# for dep_var in dependent_vars:
+#     model_poly = sm.OLS(df[dep_var], df[independent_vars_poly]).fit()
+#     print(f'\n多项式回归结果 ({dep_var}):')
+#     print(model_poly.summary())
+#     绘制散点图和拟合曲线
+#     plt.scatter(df['size'], df[dep_var], label='real')
+#     plt.plot(df['size'], model_poly.predict(), color='red', label='fit (poly)')
+#     plt.xlabel('size')
+#     plt.ylabel(dep_var)
+#     plt.title('polynomial regression')
+#     plt.legend()
+#     plt.show()
