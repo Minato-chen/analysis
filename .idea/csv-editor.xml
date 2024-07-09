@@ -10,6 +10,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\statistics\angle\updated_averaged_data_with_RTC_angle.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\updated_averaged_data_012.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\updated_averaged_data_012_sta.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

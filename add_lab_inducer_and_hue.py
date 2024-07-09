@@ -1,7 +1,7 @@
 import pandas as pd
 
 # 读取两个CSV文件
-add_data = pd.read_csv('averaged_data_with_error_bars_2.csv')
+add_data = pd.read_csv('training_test.csv')
 inducer_color_reference = pd.read_csv('inducer_color_reference.csv')
 
 # 创建一个新的DataFrame来存储结果
@@ -30,6 +30,7 @@ for index, row in inducer_color_reference.iterrows():
         add_data.loc[matched_rows.index, 'b_test'] = 90
 
 # 保存更新后的add_data到新的CSV文件
-add_data.to_csv('updated_averaged_data_2.csv', index=False)
+# add_data.to_csv('updated_averaged_data_2.csv', index=False)
+add_data.to_csv('training_data.csv', index=False)
 
 print("数据处理完成，结果已保存")
