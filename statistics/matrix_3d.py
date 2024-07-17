@@ -9,15 +9,12 @@ output_folder = "angle"
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
-# 读取CSV文件，假设数据格式和之前一样，这里只需读取需要的数据列
 df = pd.read_csv("./updated_averaged_data_with_RTC_angle.csv",
-                 usecols=["a_label_mean", "b_label_mean", "a_inducer", "b_inducer", "a_test", "b_test", "size",
-                          "hue_inducer"])
+                 usecols=["L_label_mean", "a_label_mean", "b_label_mean", "L_inducer", "a_inducer", "b_inducer",
+                          "L_test", "a_test", "b_test", "size", "hue_inducer"])
 
 
-def calculate_angle(a1, b1, a2, b2):
-    vector1 = np.array([a1, b1])  # TC
-    vector2 = np.array([a2, b2])  # TR
+def calculate_angle_3d(vector1, vector2):
     cos_theta = np.dot(vector1, vector2) / (
             np.linalg.norm(vector1) * np.linalg.norm(vector2)
     )
@@ -25,16 +22,25 @@ def calculate_angle(a1, b1, a2, b2):
     return np.degrees(angle)
 
 
-def determine_sign(a1, b1, a2, b2):
-    cross_product = a1 * b2 - b1 * a2
-    return 1 if cross_product > 0 else -1
+def determine_sign_3d(vector1, vector2):
+    cross_product = np.cross(vector1, vector2)
+    return 1 if np.linalg.norm(cross_product) > 0 else -1
 
 
-def rotation_matrix(angle_deg):
+def rotation_matrix_3d(angle_deg, axis):
     angle_rad = np.radians(angle_deg)
+    axis = axis / np.linalg.norm(axis)
+    cos_theta = np.cos(angle_rad)
+    sin_theta = np.sin(angle_rad)
+    ux, uy, uz = axis
+
     return np.array([
-        [np.cos(angle_rad), -np.sin(angle_rad)],
-        [np.sin(angle_rad), np.cos(angle_rad)]
+        [cos_theta + ux ** 2 * (1 - cos_theta), ux * uy * (1 - cos_theta) - uz * sin_theta,
+         ux * uz * (1 - cos_theta) + uy * sin_theta],
+        [uy * ux * (1 - cos_theta) + uz * sin_theta, cos_theta + uy ** 2 * (1 - cos_theta),
+         uy * uz * (1 - cos_theta) - ux * sin_theta],
+        [uz * ux * (1 - cos_theta) - uy * sin_theta, uz * uy * (1 - cos_theta) + ux * sin_theta,
+         cos_theta + uz ** 2 * (1 - cos_theta)]
     ])
 
 
@@ -43,25 +49,27 @@ angles = []
 rotation_matrices = []
 
 for index, row in df.iterrows():
+    L_label_mean = row["L_label_mean"]
     a_label_mean = row["a_label_mean"]
     b_label_mean = row["b_label_mean"]
+    L_inducer = row["L_inducer"]
     a_inducer = row["a_inducer"]
     b_inducer = row["b_inducer"]
+    L_test = row["L_test"]
     a_test = row["a_test"]
     b_test = row["b_test"]
 
-    RTC_angle = calculate_angle(a_inducer - a_test, b_inducer - b_test, a_label_mean - a_test, b_label_mean - b_test)
-    sign = determine_sign(
-        a_inducer - a_test,
-        b_inducer - b_test,
-        a_label_mean - a_test,
-        b_label_mean - b_test,
-    )
-    RTC_angle *= sign
-    angles.append(RTC_angle)
+    vector_test = np.array([L_inducer - L_test, a_inducer - a_test, b_inducer - b_test])
+    vector_label = np.array([L_label_mean - L_test, a_label_mean - a_test, b_label_mean - b_test])
 
-    rot_matrix = rotation_matrix(RTC_angle)
-    rotation_matrices.append(rot_matrix)
+    angle_3d = calculate_angle_3d(vector_test, vector_label)  # 这里对调没有问题
+    sign_3d = determine_sign_3d(vector_test, vector_label)  # 这里注意顺序
+    angle_3d *= sign_3d
+
+    axis = np.cross(vector_test, vector_label)
+    rot_matrix_3d = rotation_matrix_3d(angle_3d, axis)
+    angles.append(angle_3d)
+    rotation_matrices.append(rot_matrix_3d)
 
 df["RTC_angle"] = angles
 
@@ -91,5 +99,5 @@ for i, size in enumerate(sizes):
             ax.axis('off')  # 如果没有匹配的数据，关闭该子图
 
 plt.tight_layout(pad=1.5)
-plt.savefig(os.path.join(output_folder, 'rotation_matrices_heatmap_custom.png'), bbox_inches='tight')
+plt.savefig(os.path.join(output_folder, 'rotation_matrices_heatmap_3d_custom.png'), bbox_inches='tight')
 plt.show()

@@ -23,10 +23,10 @@ def calculate_angle(a1, b1, a2, b2):
 
 def determine_sign(a1, b1, a2, b2):
     cross_product = a1 * b2 - b1 * a2
-    return -1 if cross_product > 0 else 1
+    return 1 if cross_product > 0 else -1
 
 
-# cross_product > 0逆时针，为-号，cross_product < 0顺时针，为+号
+# cross_product > 0,v2在v1的顺时针，为+号，cross_product < 0v2在v1的逆时针，为-号
 
 angles = []
 for index, row in df.iterrows():
@@ -37,15 +37,15 @@ for index, row in df.iterrows():
     a_test = row["a_test"]
     b_test = row["b_test"]
 
-    RTC_angle = calculate_angle(a_label_mean - a_test, b_label_mean - b_test, a_inducer - a_test, b_inducer - b_test)
+    RTC_angle = calculate_angle(a_inducer - a_test, b_inducer - b_test, a_label_mean - a_test, b_label_mean - b_test)
     # TC_angle = calculate_angle(a_inducer-a_test, b_inducer-b_test, 1, 0)
     # RTC_angle = TR_angle - TC_angle
 
     sign = determine_sign(
-        a_label_mean - a_test,
-        b_label_mean - b_test,
         a_inducer - a_test,
         b_inducer - b_test,
+        a_label_mean - a_test,
+        b_label_mean - b_test,
     )
     RTC_angle *= sign
     angles.append(RTC_angle)
